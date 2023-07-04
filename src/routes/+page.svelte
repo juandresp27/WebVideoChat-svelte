@@ -13,7 +13,7 @@
     let roomNoValid = null
     let roomT = ''
     let setUser = false
-    
+
     socketConnection.update(()=>io())
     
     const unsubscribe = socketConnection.subscribe(value => {
@@ -27,6 +27,7 @@
     const handleRoomValid = (data)=>{
         goto(`/${data}`)
         roomT = ''
+        console.log('is valid route')
     }
 
     const handelRoomNoValid = () => {

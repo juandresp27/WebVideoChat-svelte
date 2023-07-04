@@ -1,5 +1,5 @@
 /** @type {import('./$types').PageLoad} */
-export let ssr = false
+//export let ssr = false
 export function load({ params }) {
     return {
         roomId: params.roomId
