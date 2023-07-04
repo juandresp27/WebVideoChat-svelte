@@ -5,9 +5,13 @@
     export let streamData
     export let id
     
+    let muted   
     let video_source
     
     onMount(()=>{
+        if(id === 'me') muted = true
+        else muted = false
+
         video_source.srcObject = streamData;
         video_source.play()
     })
@@ -17,8 +21,12 @@
 
 <div class="video-container">
     {#if streamData}
-        <video bind:this={video_source} autoplay id={id}>
-            <track kind="captions"/>
+        <video 
+            bind:this={video_source} 
+            bind:muted 
+            autoplay 
+            id={id}>
+                <track kind="captions"/>
         </video>
     {/if}
 </div>

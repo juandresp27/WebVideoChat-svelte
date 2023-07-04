@@ -13,35 +13,30 @@
     .room-card {
         display: flex;
         align-items: center;
-        z-index: 1;
-        position: absolute;
-        background: rgb(27,11,45);
-        width: 30%;
-        color: white;
-        border-radius: 0.5rem;
-        padding: 0 1rem;
-        right: 0;
-        margin: 3rem 0.5rem 0 0;
+        width: 100%;
+        height: 100%;
+        color: whitesmoke;
+        margin-top: 0.5rem;
     }
 
     .room-card p{
-        font-size: small;
+        font-size: 1rem;
         flex-grow: 1;
     }
 
     button{
-        width: 3rem;
-        height: 1.5rem;
+        padding: 6px;
         border: none;
         border-radius: 0.3rem;
-        background: #f6e4f6;
+        background: #6c6b67;
+        color: whitesmoke;
         justify-content: center;
         align-items: center;
-        color: #4e328a;
+        
     }
     button:hover{
-        background: #c642c6;
-        color: white;
+        background: #ffffbc;
         cursor: pointer;
+        color: black;
     }
 </style>

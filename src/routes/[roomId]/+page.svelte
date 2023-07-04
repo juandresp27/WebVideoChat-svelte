@@ -1,24 +1,18 @@
 <script>
 	import { onDestroy, onMount } from 'svelte'
-    import { socketConnection, showControls } from '../../stores'
+    import { socketConnection, devicesSelected } from '../../stores'
     import { goto } from '$app/navigation'
     
     import IncorrectJoinCard from '../../components/IncorrectJoinCard.svelte'
     import IncorrectRoomCard from '../../components/IncorrectRoomCard.svelte'
-    import UsersConnected from '../../components/UsersConnected.svelte'
-    import ShareRoom from '../../components/ShareRoom.svelte'
     import StreamsZone from '../../components/StreamsZone.svelte'
-    import Controls from '../../components/Controls.svelte'
+    import ControlsAcces from '../../components/ControlsAcces.svelte'
+    import SettingsCard from '../../components/SettingsCard.svelte';
 
-    import People from '../../assets/People.svelte'
-    import PeopleFill from '../../assets/PeopleFill.svelte'
-    import Share from '../../assets/Share.svelte'
-    import ShareFill from '../../assets/ShareFill.svelte'
-    
 
     /** @type {import('./$types').PageData} */
     export let data
-    
+
     let usersConnected = []
     
     let socket
@@ -32,13 +26,10 @@
     let incorretJoin = false
     let incorretRoom = false
 
-    $: console.log(connections)
+    let showSettings = true   
 
-    $: console.log(remoteStreams)
-
-    let showUsers = false
-    let showRoomID = false
-    let controlsToggler
+    let devicesSelect 
+    
 
     const peerConnectionConfig = {
         'iceServers': [
@@ -46,22 +37,26 @@
             {'urls': 'stun:stun.l.google.com:19302'},
         ]
     }
-    const constraints = {
-        video: true,
-        audio: true,
-    }
+
 
     const unsubscribe = socketConnection.subscribe(value => {
         socket = value
     })
 
-    const unsubscribeControls = showControls.subscribe(value => {
-        controlsToggler = value
+    const unsubscribeDevicesSel = devicesSelected.subscribe(value => {
+        devicesSelect = value
     })
 
     const handleLeave = () => {
         socket.emit('room:leave', data.roomId)
         goto('/')
+        devicesSelected.update(()=>{
+            return({
+                microphoneId: '',
+                videoId: '',
+                speakerId: ''
+            })
+        })
     }
 
     const handleUserLeft = (socketID) => {
@@ -72,24 +67,36 @@
         usersConnected = users
     }
 
- 
     const getMyStream = async () => {
-        try {
-            if(navigator.mediaDevices.getUserMedia) {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia(constraints)
-                localStream = stream 
-                return stream
-            } catch (err) {
-                console.log(err)
+        const constraints = {
+            video: {
+                deviceId: {
+                exact:  devicesSelect.videoId,
+                },
+            },
+            audio: {
+                deviceId: {
+                exact:  devicesSelect.microphoneId,
+                },
             }
         }
-            alert('Navegador no soportado')
+        try {
+            if(navigator.mediaDevices.getUserMedia) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints)
+                    localStream = stream 
+                    return stream
+                } catch (err) {
+                    console.log(err)
+                }
+            }
+    
         } catch (e) {
             console.log(e)
         }
         
     }
+
 
     const gotMessageFromServer = (fromId, message) => {
         
@@ -98,7 +105,7 @@
         
         //Make sure it's not coming from yourself
         if(fromId !== socketId) {
-            console.log(signal)
+            
             if(signal.sdp){            
                 connections[fromId].setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(function() {                
                     if(signal.sdp.type == 'offer') {
@@ -160,34 +167,43 @@
     const handleIncorrectRoom = () => {
         incorretRoom = true
     }
-              
+
     socketId = socket.id
     
-    onMount(() => {
+    onMount(async() => {
         socket.emit('users:request', data.roomId)
         socket.on('join:incorrect', handleIncorrectJoin)
         socket.on('room:incorrect', handleIncorrectRoom)
         socket.on('users:response', handleResponse)
     })
 
-    if(!incorretJoin) {
-        getMyStream()
-        .then(stream => {
-            //localSource.srcObject = stream
-            //localSource.play()
-        })
-        .then(()=>{
-            socket.on('user:connected', handleUserConnected)
-            socket.on('signal', gotMessageFromServer)
-            socket.on('user:left', handleUserLeft)
-            console.log('page ready')
-            socket.emit('page:ready', data.roomId)
-        })
+    
+    $: {
+        if(!incorretJoin) {
+            //handleSettings()
+                if(devicesSelect.microphoneId !== '' && devicesSelect.videoId !== '' && devicesSelect.speakerId !== ''){
+                    showSettings = false
+                    getMyStream()
+                        .then(stream => {
+                            //localSource.srcObject = stream
+                            //localSource.play()
+                        })
+                        .then(()=>{
+                            socket.on('user:connected', handleUserConnected)
+                            socket.on('signal', gotMessageFromServer)
+                            socket.on('user:left', handleUserLeft)
+                            
+                            socket.emit('page:ready', data.roomId)
+                        })
+                }
+            
+        }
     }
+    
     
     onDestroy(()=>{
         unsubscribe()
-        unsubscribeControls()
+        unsubscribeDevicesSel()
         socket.off('join:incorrect',handleIncorrectJoin)
         socket.off('room:incorrect', handleIncorrectRoom)
         socket.off('users:response', handleResponse)
@@ -196,9 +212,6 @@
         socket.off('user:left', handleUserLeft)
     })
 
-    /*<button on:click={handleLeave}>Leave</button>
-            
-            */
 </script>
 
 
@@ -209,40 +222,25 @@
     {:else if incorretJoin}
         <IncorrectJoinCard />
     {:else}
-    
-    <main>
-        <button on:click={() => showRoomID = !showRoomID} class='show' id="share">
-            {#if !showRoomID}
-                <Share />
-            {:else}
-                <ShareFill />
-            {/if}
-        </button>
-
-        <button on:click={() => showUsers = !showUsers} class='show' id="users">
-            {#if !showUsers}
-                <People />
-            {:else}
-                <PeopleFill />
-            {/if}
-        </button>
-
-        {#if showUsers}
-            <UsersConnected usersConnected={usersConnected} />    
+        {#if showSettings}
+            <SettingsCard/>
+        {:else}
+            <header>
+                <ControlsAcces 
+                    roomID={data.roomId} 
+                    usersConnected={usersConnected}
+                    leaveFunc={handleLeave}
+                />
+            </header>
+            
+            <main>
+                <StreamsZone 
+                    localStream = {localStream}
+                    remoteStreams = {remoteStreams}
+                />
+            </main>
         {/if}
-
-        {#if showRoomID}
-            <ShareRoom RoomID={data.roomId} />
-        {/if}
-
-        <StreamsZone 
-            localStream = {localStream}
-            remoteStreams = {remoteStreams}
-        />
-
-        <Controls showState={controlsToggler}/>
-
-    </main>
+ 
 
     {/if}
 
@@ -252,47 +250,23 @@
 
 
 <style>
-
-    :global(body) {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+    
+    header {
+        position: fixed;
+        top: 0;
+        width: 100svw;
+        background: #3c3c3c;
+        padding: 0.5rem 0;
+        z-index: 1;
     }
 
+
     .Page {
-        background: #0c0910;
-        background: linear-gradient(37deg, rgba(27,11,45,1) 0%, rgba(57,10,56,1) 100%);
         max-width: 100svw;
         max-height: 100svh;
         width: 100svw;
         height: 100svh;
     }
-
-    .show{
-        z-index: 1;
-        position: absolute;
-        right: 0;
-        border: none;
-        border-radius: 0.3rem;
-        background: #a61ba4;
-        padding: 0.4rem 0.6rem;
-        justify-content: center;
-        align-items: center;
-        color: #ece4ff;
-    }
-
-    .show:hover{
-        background: #c44ac2;
-        cursor: pointer;
-    }
-    
-    #users{
-        margin: 0.5rem 0.5rem 0; 
-    }
-    #share{
-        margin: 0.5rem 3.5rem 0; 
-    }
-
 
     main {
         display: inline;

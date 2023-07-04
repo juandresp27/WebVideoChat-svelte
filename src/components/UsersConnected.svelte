@@ -16,15 +16,11 @@
 
 <style>
     .conn-users {
-        z-index: 1;
-        position: absolute;
-        background: rgb(27,11,45);
-        width: 30%;
-        color: white;
-        border-radius: 0.5rem;
-        padding: 0 1rem;
-        right: 0;
-        margin: 3rem 0.5rem 0 0;
+        
+        color: whitesmoke;
+        width: 100%;
+        padding: 0.01rem 1rem;
+        
     }
 
     .conn-users p{

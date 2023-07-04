@@ -14,7 +14,7 @@
     let dishArea
     let usersQty
 
-    $: usersQty = remoteStreams.length + 1
+    //$: usersQty = remoteStreams.length + 1
 
     let calculatedWidth
     let calculatedHeight
@@ -56,6 +56,7 @@
 
 
     $: {
+        usersQty = remoteStreams.length + 1
         dishSize = {
             width: Math.floor(screenWidth*0.98),
             height: Math.floor(screenHeight*0.87)
@@ -94,9 +95,9 @@
         margin: 10px;
     }
     .dish{
-        height: 87svh;
+        height: 88svh;
         width: 98svw;
-        margin: 2rem auto 0 auto;
+        margin: 2.6rem auto 0 auto;
 
         display: flex;
         
