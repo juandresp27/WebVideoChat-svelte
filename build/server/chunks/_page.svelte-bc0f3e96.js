@@ -298,7 +298,7 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   {
     {
       if (!incorretJoin) {
-        if (devicesSelect.microphoneId !== "" && devicesSelect.videoId !== "" && devicesSelect.speakerId !== "") {
+        if (devicesSelect.microphoneId !== "" && devicesSelect.videoId !== "") {
           showSettings = false;
           getMyStream().then((stream) => {
           }).then(() => {
@@ -328,4 +328,4 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 });
 
 export { Page as default };
-//# sourceMappingURL=_page.svelte-4f0290e4.js.map
+//# sourceMappingURL=_page.svelte-bc0f3e96.js.map

@@ -4,12 +4,12 @@ const manifest = {
 	assets: new Set([]),
 	mimeTypes: {},
 	_: {
-		client: {"start":"_app/immutable/entry/start.749b50f5.js","app":"_app/immutable/entry/app.dcd03052.js","imports":["_app/immutable/entry/start.749b50f5.js","_app/immutable/chunks/index.43fd0a54.js","_app/immutable/chunks/singletons.b40ee28f.js","_app/immutable/entry/app.dcd03052.js","_app/immutable/chunks/index.43fd0a54.js"],"stylesheets":[],"fonts":[]},
+		client: {"start":"_app/immutable/entry/start.a1dc3eba.js","app":"_app/immutable/entry/app.8b5cf91f.js","imports":["_app/immutable/entry/start.a1dc3eba.js","_app/immutable/chunks/index.43fd0a54.js","_app/immutable/chunks/singletons.ac01d7f8.js","_app/immutable/entry/app.8b5cf91f.js","_app/immutable/chunks/index.43fd0a54.js"],"stylesheets":[],"fonts":[]},
 		nodes: [
 			() => import('./chunks/0-e8f92640.js'),
-			() => import('./chunks/1-fb48b95c.js'),
-			() => import('./chunks/2-c554a0d8.js'),
-			() => import('./chunks/3-29c99a80.js')
+			() => import('./chunks/1-3e51d4f6.js'),
+			() => import('./chunks/2-ba583d5e.js'),
+			() => import('./chunks/3-283443c5.js')
 		],
 		routes: [
 			{

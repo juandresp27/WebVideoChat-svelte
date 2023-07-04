@@ -181,7 +181,7 @@
     $: {
         if(!incorretJoin) {
             //handleSettings()
-                if(devicesSelect.microphoneId !== '' && devicesSelect.videoId !== '' && devicesSelect.speakerId !== ''){
+                if(devicesSelect.microphoneId !== '' && devicesSelect.videoId !== ''){
                     showSettings = false
                     getMyStream()
                         .then(stream => {

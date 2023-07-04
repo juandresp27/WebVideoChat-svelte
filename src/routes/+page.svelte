@@ -169,6 +169,7 @@
         padding: 0.5rem 1rem;
         background: #EBD18D;
         cursor: pointer;
+        color: black;
     }
     button:hover{
         background: #f3ead2;
