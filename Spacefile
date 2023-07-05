@@ -3,5 +3,5 @@ v: 0
 micros:
   - name: WebVideoChat-svelte
     src: ./
-    engine: svelte-kit
+    engine: nodejs16
     primary: true

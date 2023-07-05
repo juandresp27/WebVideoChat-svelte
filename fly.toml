@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for webvideoapp on 2023-07-04T18:20:42-05:00
+# fly.toml app configuration file generated for conferencevideo on 2023-07-04T19:35:19-05:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "webvideoapp"
+app = "conferencevideo"
 primary_region = "mia"
 
 [build]
