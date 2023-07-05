@@ -43,7 +43,7 @@
 
 
     const handleSubmit = () => {
-        if(microSelected && videoSelected && speakerSelected){
+        if(microSelected && videoSelected){
             devicesSelected.update((devices)=>{
                 return {
                     microphoneId: microSelected,
